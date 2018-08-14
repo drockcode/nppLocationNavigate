@@ -20,6 +20,7 @@
 
 extern void InitBookmark();
 extern vector<MarkData> MarkHistory;
+
 void LocationNavigateDlg::refreshValue()
 {
     TCHAR strHint[500]={0}; 
@@ -38,6 +39,7 @@ void LocationNavigateDlg::refreshValue()
     //::SendMessage( _hBookmark, BM_SETCHECK ,(LPARAM)(ByBookMark?1:0),0);
     ::SendMessage(_hBookmark, CB_SETCURSEL, ByBookMark, 0);
 }
+
 void EnableTBButton(menuList flagIndex,bool state)
 {
     if ( menuState[flagIndex] !=state )
@@ -56,6 +58,7 @@ void EnableTBButton(menuList flagIndex,bool state)
         
     }
 }
+
 void SetPosByIndex()
 {
     long maxLen = LocationList.size()-1;
@@ -119,12 +122,14 @@ void SetPosByIndex()
         PositionSetting = false;
     }
 }
+
 void ClearLocationList()
 {
     LocationList.clear();
     LocationPos = -1;
 }
-BOOL CALLBACK LocationNavigateDlg::run_dlgProc(UINT message, WPARAM wParam, LPARAM lParam)
+
+INT_PTR CALLBACK LocationNavigateDlg::run_dlgProc(UINT message, WPARAM wParam, LPARAM lParam)
 {
     switch (message) 
     {
@@ -333,6 +338,7 @@ BOOL CALLBACK LocationNavigateDlg::run_dlgProc(UINT message, WPARAM wParam, LPAR
     }
     return TRUE;
 }
+
 deque<LocationInfo>LocationList;
 deque<LocationInfo>LocationSave;
 long LocationPos=0;

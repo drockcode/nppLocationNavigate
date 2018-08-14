@@ -24,7 +24,6 @@
 #include "resource.h"
 
 #define SELF_REFRESH WM_USER+9
-
 enum MarkType
 {
     // ??? MarkTypeArr ??
@@ -38,6 +37,7 @@ enum MarkType
     ////////////////????????
     MarkBookmark, // ???????,?????? SC_MARK ?
 };
+
 const TCHAR sectionName[] = TEXT( "Setting" );
 const TCHAR strMaxOffset[] = TEXT( "MaxOffset" );
 const TCHAR strMaxList[] = TEXT( "MaxList" );
@@ -83,7 +83,9 @@ extern void ClearLocationList();
 
 void SetPosByIndex();
 void EnableTBButton( menuList flagIndex, bool state );
+
 #define TB_ENABLEBUTTON         (WM_USER + 1)
+
 class LocationNavigateDlg : public DockingDlgInterface
 {
     public :
@@ -184,13 +186,16 @@ class LocationNavigateDlg : public DockingDlgInterface
         {
             _hParent = parent2set;
         };
+
         HWND _hListBox, _hUG_T, _hUG_E, _hUG_OK, _hMark, _hUG_T2, _hUG_E2, _hABOUT,
              _hAuto, _hClear, _hAlways, _hSaveRecord, _hInCurr, _hBookmark, _hColor,
              _hSaveColor;
+
     protected :
-        virtual BOOL CALLBACK run_dlgProc( UINT message, WPARAM wParam,
+        virtual INT_PTR CALLBACK run_dlgProc( UINT message, WPARAM wParam,
                                            LPARAM lParam );
         SelfCtrl _color, _savecolor;
+
     private :
         void refreshValue();
 };

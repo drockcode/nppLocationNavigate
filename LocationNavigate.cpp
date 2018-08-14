@@ -16,10 +16,12 @@
 //Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "PluginDefinition.h"
 #include <shlwapi.h>
+#include "DockingFeature/LNhistoryDlg.h"
+
 #include <tchar.h>
-#include "DockingFeature\LNhistoryDlg.h"
 #include <list>
 #include <WinBase.h>
+
 ////////////////SELF DATA BEGIN///////////
 TCHAR currFile[MAX_PATH] = {0};
 static int currBufferID = -1, PrePositionNumber = -1;
@@ -74,6 +76,7 @@ extern LocationNavigateDlg _LNhistory;
 static bool AllCloseFlag = false;
 TCHAR currTmpFile[MAX_PATH];// ?????????
 int currTmpBufferID; // ????????ID
+
 enum ActionType
 {
     ActionModify = 0,
@@ -81,6 +84,7 @@ enum ActionType
     ActionClosed,
     ActionLocation,
 };
+
 struct ActionData
 {
     ActionType type;
@@ -88,7 +92,9 @@ struct ActionData
     int length;
     bool changed;
 };
+
 list<ActionData> ActionDataList;
+
 void DoFilesCheck()
 {
     // ????????????????,????????,????????
@@ -153,6 +159,7 @@ void DoFilesCheck()
 
     //_LNhistory.refreshDlg();
 }
+
 void DoModify( int len, int pos )
 {
     // SEARCH in files WILL CHANGE IT
@@ -217,6 +224,7 @@ void DoModify( int len, int pos )
         }
     }
 }
+
 void AddListData( LocationInfo *tmp )
 {
     long preLen = LocationList.size();
@@ -264,6 +272,7 @@ void AddListData( LocationInfo *tmp )
     }
     LocationPos = LocationList.size() - 1;
 }
+
 void AddList( bool flag )
 {
     if ( !bAutoRecord && !flag )
@@ -337,7 +346,9 @@ void AddList( bool flag )
     PrePositionNumber = position;
     PositionSetting = false;
 }
+
 const int _MARK_BOOKMARK = 1 << 24;
+
 void InitBookmark()
 {
     if ( !NeedMark || isAutoModify )
@@ -415,8 +426,10 @@ void InitBookmark()
         // SC_MARK_FULLRECT,SC_MARK_UNDERLINE ,SC_MARK_CIRCLE,SC_MARK_ARROW, SC_MARK_SMALLRECT,
     }
 }
+
 static bool ThreadNeedRefresh = false;
-DWORD   WINAPI   ThreadFunc(   LPVOID   lpParam   )
+
+DWORD WINAPI ThreadFunc( LPVOID lpParam )
 {
     while ( !AllCloseFlag )
     {
@@ -477,6 +490,7 @@ DWORD   WINAPI   ThreadFunc(   LPVOID   lpParam   )
     }
     return   0;
 }
+
 void DoSavedColor()
 {
     if ( ByBookMark == MarkBookmark )return;
@@ -512,6 +526,7 @@ void DoSavedColor()
     ::SendMessage( curScintilla, SCI_MARKERDELETEALL, _MARK_INDEX, 0 );
 
 }
+
 int AddMarkFromLine( int line )
 {
     int markHandle = -1;
@@ -544,6 +559,7 @@ int AddMarkFromLine( int line )
     }
     return markHandle;
 }
+
 void SetBookmark( int lineNo, int pos, int linesAdded, int len )
 {
 
@@ -578,6 +594,7 @@ void SetBookmark( int lineNo, int pos, int linesAdded, int len )
     MarkHistory.push_back( tmp );
 
 }
+
 bool RemoveMarkFromLine( int line )
 {
     int state = ( int )::SendMessage( curScintilla, SCI_MARKERGET, line, 0 );
@@ -613,6 +630,7 @@ bool RemoveMarkFromLine( int line )
     }
     return true;
 }
+
 void DelBookmark( int lineNo, int pos, int lineAdd )
 {
     if ( ByBookMark != MarkBookmark )
@@ -705,6 +723,7 @@ void DelBookmark( int lineNo, int pos, int lineAdd )
     }
     MarkHistory.erase( MarkHistory.begin() + isMarkedIndex );
 }
+
 //////////  SELF FUNCTION END ////////
 BOOL APIENTRY DllMain( HANDLE hModule,
                        DWORD  reasonForCall,
@@ -719,6 +738,7 @@ BOOL APIENTRY DllMain( HANDLE hModule,
         case DLL_PROCESS_DETACH:
             pluginCleanUp();
             break;
+
         case DLL_THREAD_ATTACH:
             break;
 
@@ -728,7 +748,6 @@ BOOL APIENTRY DllMain( HANDLE hModule,
 
     return TRUE;
 }
-
 
 extern "C" __declspec( dllexport ) void setInfo( NppData notpadPlusData )
 {
@@ -760,18 +779,21 @@ typedef struct _TBBUTTON
     DWORD_PTR dwData;
     INT_PTR iString;
 } TBBUTTON, NEAR *PTBBUTTON, *LPTBBUTTON;
+
 typedef const TBBUTTON *LPCTBBUTTON;
-#define TB_GETBUTTON            (WM_USER + 23)
-#define TB_BUTTONCOUNT          (WM_USER + 24)
-#define TB_COMMANDTOINDEX       (WM_USER + 25)
-static long preModifyPos = -1;//??????
-static long preModifyLineAdd = -1;//???????
-extern "C" __declspec( dllexport ) void beNotified( SCNotification
-        *notifyCode )
+
+#define TB_GETBUTTON      (WM_USER + 23)
+#define TB_BUTTONCOUNT    (WM_USER + 24)
+#define TB_COMMANDTOINDEX (WM_USER + 25)
+
+static long preModifyPos = -1;
+static long preModifyLineAdd = -1;
+
+extern "C" __declspec( dllexport ) void beNotified( SCNotification *notifyCode )
 {
     _LNhistory.setParent( nppData._nppHandle );
-
     int ModifyType = notifyCode->modificationType;
+
     if ( ( notifyCode->nmhdr.hwndFrom == nppData._nppHandle ) &&
             ( notifyCode->nmhdr.code == NPPN_TBMODIFICATION ) )
     {
@@ -811,6 +833,7 @@ extern "C" __declspec( dllexport ) void beNotified( SCNotification
             IconID[i] = -1;
         }
     }
+
     switch ( notifyCode->nmhdr.code )
     {
         case NPPN_SHUTDOWN:
@@ -818,6 +841,7 @@ extern "C" __declspec( dllexport ) void beNotified( SCNotification
             commandMenuCleanUp();
         }
         break;
+
         case NPPN_READY:
         {
             // ???? ReBarWindow32 ToolbarWindow32
@@ -988,6 +1012,7 @@ extern "C" __declspec( dllexport ) void beNotified( SCNotification
             ready = true;
         }
         break;
+
         // mark setting remove to SCN_SAVEPOINTREACHED
         case NPPN_FILESAVED:
         {
@@ -1005,6 +1030,7 @@ extern "C" __declspec( dllexport ) void beNotified( SCNotification
             lstrcpy( currFile, currTmpFile );
         }
         break;
+
         case NPPN_FILEBEFORECLOSE:
         {
             // ??????,???????????,?????????
@@ -1020,12 +1046,14 @@ extern "C" __declspec( dllexport ) void beNotified( SCNotification
             }
         }
         break;
+
         case NPPN_FILEBEFOREOPEN:
         case NPPN_FILEBEFORELOAD:
         {
             isOpenFile = true;
         }
         break;
+
         case NPPN_FILEOPENED:
         case NPPN_FILECLOSED:
         {
@@ -1080,6 +1108,7 @@ extern "C" __declspec( dllexport ) void beNotified( SCNotification
         }
         break;
         // ????
+
         case NPPN_BUFFERACTIVATED:
         {
             //scnNotification->nmhdr.code = NPPN_BUFFERACTIVATED;
@@ -1121,6 +1150,7 @@ extern "C" __declspec( dllexport ) void beNotified( SCNotification
             }
         }
         break;
+
         case SCN_UPDATEUI:
         {
             if ( ready )
@@ -1131,6 +1161,7 @@ extern "C" __declspec( dllexport ) void beNotified( SCNotification
             }
         }
         break;
+
         case SCN_MODIFIED:
         {
             // ?????????????,?????????,??????
@@ -1259,6 +1290,7 @@ extern "C" __declspec( dllexport ) void beNotified( SCNotification
             }
         }
         break;
+
         case SCN_SAVEPOINTREACHED:
         {
             if ( NeedMark && !isOpenFile )
@@ -1268,6 +1300,7 @@ extern "C" __declspec( dllexport ) void beNotified( SCNotification
             }
         }
         break;
+
         default:
             return;
     }

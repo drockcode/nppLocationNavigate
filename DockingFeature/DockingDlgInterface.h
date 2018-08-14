@@ -90,12 +90,11 @@ class DockingDlgInterface : public StaticDialog
         };
 
     protected :
-        virtual BOOL CALLBACK run_dlgProc( UINT message, WPARAM wParam,
+        virtual INT_PTR CALLBACK run_dlgProc( UINT message, WPARAM wParam,
                                            LPARAM lParam )
         {
             switch ( message )
             {
-
                 case WM_NOTIFY:
                 {
                     LPNMHDR pnmh    = ( LPNMHDR )lParam;

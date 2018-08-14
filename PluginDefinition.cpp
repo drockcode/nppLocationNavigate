@@ -24,8 +24,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include <shlwapi.h>
-#include "DockingFeature\LNhistoryDlg.h"
-
+#include "DockingFeature/LNhistoryDlg.h"
 
 LocationNavigateDlg _LNhistory;
 
@@ -116,15 +115,17 @@ void pluginCleanUp()
                                      iniFilePath );
     }
 
-    if (g_TBPreviousChg.hToolbarBmp)
-        ::DeleteObject(g_TBPreviousChg.hToolbarBmp);
-    if (g_TBPrevious.hToolbarBmp)
-        ::DeleteObject(g_TBPrevious.hToolbarBmp);
+    LocationList.clear();
+    _LNhistory.destroy();
 
-    if (g_TBNext.hToolbarBmp)
-        ::DeleteObject(g_TBNext.hToolbarBmp);
-    if (g_TBNextChg.hToolbarBmp)
-        ::DeleteObject(g_TBNextChg.hToolbarBmp);
+    if ( g_TBPreviousChg.hToolbarBmp )
+        ::DeleteObject( g_TBPreviousChg.hToolbarBmp );
+    if ( g_TBPrevious.hToolbarBmp )
+        ::DeleteObject( g_TBPrevious.hToolbarBmp );
+    if ( g_TBNext.hToolbarBmp )
+        ::DeleteObject( g_TBNext.hToolbarBmp );
+    if ( g_TBNextChg.hToolbarBmp )
+        ::DeleteObject( g_TBNextChg.hToolbarBmp );
 }
 
 //
@@ -182,7 +183,7 @@ void commandMenuInit()
     //            ShortcutKey *shortcut,          // optional. Define a shortcut to trigger this command
     //            bool check0nInit                // optional. Make this menu item be checked visually
     //            );
-#define VK_OEM_MINUS      0xBD
+#define VK_OEM_MINUS 0xBD
     ShortcutKey *PreviousKey = new ShortcutKey;
     PreviousKey->_isAlt = false;
     PreviousKey->_isCtrl = true;
@@ -257,27 +258,25 @@ void commandMenuInit()
                 LocationNavigateHistoryDlg, optionsKey, false );
 
     setCommand( menuSeparator0, TEXT( "-SEPARATOR-" ), NULL, NULL, false );
+
     setCommand( menuAutoRecord, TEXT( "Auto Record" ), AutoRecord, NULL,
                 false );
     setCommand( menuManualRecord, TEXT( "Manual Record" ), ManualRecord, NULL,
                 false );
     setCommand( menuClearRecords, TEXT( "Clear All Records" ), ClearAllRecords,
                 NULL, false );
-
-
     setCommand( menuInCurr, TEXT( "In Current File" ), NavigateInCurr, NULL,
                 false );
     setCommand( menuNeedMark, TEXT( "Mark Changed Line" ), MarkChange, NULL,
                 false );
 
     setCommand( menuSeparator1, TEXT( "-SEPARATOR-" ), NULL, NULL, false );
+
     setCommand( menuCheckUpdate, TEXT( "Check for update" ), checkUpdate, NULL,
                 false );
     setCommand( menuAbout, TEXT( "About Location Navigate" ), ShowAbout, NULL,
                 false );
-
 }
-
 
 //
 // Here you can do the clean up (especially for the shortcut)
@@ -294,7 +293,6 @@ void commandMenuCleanUp()
         delete funcItem[menuInCurr]._pShKey;
         delete funcItem[menuNeedMark]._pShKey;
     */
-
 }
 
 //----------------------------------------------//
@@ -512,12 +510,12 @@ void LocationNavigateHistoryDlg()
         _LNhistory.create( &data );
 
         // define the default docking behaviour
+        data.uMask          = DWS_DF_CONT_RIGHT | DWS_ICONTAB;
+
         data.pszModuleName = _LNhistory.getPluginFileName();
 
         // the dlgDlg should be the index of funcItem where the current function pointer is
         data.dlgID = menuOption;
-        data.uMask          = DWS_DF_CONT_RIGHT | DWS_ICONTAB;
-
         data.hIconTab       = ( HICON )::LoadImage( _LNhistory.getHinst(),
                               MAKEINTRESOURCE( IDI_ICON1 ), IMAGE_ICON, 0, 0,
                               LR_LOADMAP3DCOLORS | LR_LOADTRANSPARENT );
