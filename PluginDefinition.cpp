@@ -116,6 +116,7 @@ void pluginCleanUp()
     }
 
     LocationList.clear();
+    LocationSave.clear();
     _LNhistory.destroy();
 
     if ( g_TBPreviousChg.hToolbarBmp )

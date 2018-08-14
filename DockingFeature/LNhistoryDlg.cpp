@@ -100,12 +100,11 @@ void SetPosByIndex()
         //scrollLine = targetLine - currCenterLine ;
         //::SendMessage(curScintilla, SCI_LINESCROLL , 0 , scrollLine); 
         // ??
-        if(targetLine < beginLines){
+        if(targetLine < beginLines)
             scrollLine = -screenLines/2;
-        }else if ( targetLine > beginLines+screenLines)
-        {
+        else if ( targetLine > beginLines+screenLines)
             scrollLine = screenLines/2;
-        }
+
         // ???????
         ::SendMessage(curScintilla, SCI_GOTOPOS, pos, 0);
         // ??????
@@ -117,10 +116,9 @@ void SetPosByIndex()
         //long caretPos = ::SendMessage(curScintilla, SCI_GETCURRENTPOS, 0, 0);
         //::SendMessage(curScintilla, SCI_GETCURRENTPOS, 0, 0);
         // ::SendMessage(nppData._nppHandle, NPPM_DOOPEN, 0 , (LPARAM)list_data[0].filename);
-    }else
-    {
-        PositionSetting = false;
     }
+    else
+        PositionSetting = false;
 }
 
 void ClearLocationList()
@@ -174,14 +172,12 @@ INT_PTR CALLBACK LocationNavigateDlg::run_dlgProc(UINT message, WPARAM wParam, L
                     BOOL isSuccessful;
                     int val = ::GetDlgItemInt(_hSelf, ID_LNHISTORY_EDIT, &isSuccessful, FALSE);
                     if ( val >=2 && val <=5000 )
-                    {
                         MaxOffset = val;
-                    }
+
                     val = ::GetDlgItemInt(_hSelf, ID_LNHISTORY_EDIT2, &isSuccessful, FALSE);
                     if ( val >=5 && val <=300 )
-                    {
                         MaxList = val;
-                    }
+
                     AutoClean = (::SendMessage(_hAuto, BM_GETCHECK,0,0))==1;
                     AlwaysRecord = (::SendMessage(_hAlways, BM_GETCHECK,0,0))==1;
                     SaveRecord  = (::SendMessage(_hSaveRecord, BM_GETCHECK,0,0))==1;
@@ -191,9 +187,7 @@ INT_PTR CALLBACK LocationNavigateDlg::run_dlgProc(UINT message, WPARAM wParam, L
                     {
                         //??????????
                         if( MarkBookmark!= ByBookMark)
-                        {
                             InitBookmark();
-                        }
                     }
                     refreshValue();
                     //::MessageBox(this->getHSelf(),TEXT("Setting is Saved!") , TEXT("Info"), MB_OK);
@@ -323,12 +317,12 @@ INT_PTR CALLBACK LocationNavigateDlg::run_dlgProc(UINT message, WPARAM wParam, L
             {
                 switch (LOWORD(pnmh->code))
                 {
-                case DMN_CLOSE:
+                    case DMN_CLOSE:
                     {
                         break;
                     }
-                default:
-                    break;
+                    default:
+                        break;
                 }
             }
             break;
