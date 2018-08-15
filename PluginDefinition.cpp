@@ -29,9 +29,9 @@
 LocationNavigateDlg _LNhistory;
 
 #ifdef UNICODE
-#define generic_itoa _itow
+    #define generic_itoa _itow
 #else
-#define generic_itoa itoa
+    #define generic_itoa itoa
 #endif
 
 FuncItem funcItem[nbFunc];
@@ -58,7 +58,6 @@ void pluginInit( HANDLE hModule )
 {
     // Initialize dialog
     _LNhistory.init( ( HINSTANCE )hModule, NULL );
-
     //InitializeCriticalSection(&criCounter);
 }
 
@@ -70,7 +69,7 @@ void pluginCleanUp()
     //DeleteCriticalSection(&criCounter);
     TCHAR str[500] = {0};
     wsprintf( str, TEXT( "%d" ), MaxOffset );
-    ::WritePrivateProfileString( sectionName, strMaxOffset, str , iniFilePath );
+    ::WritePrivateProfileString( sectionName, strMaxOffset, str, iniFilePath );
     wsprintf( str, TEXT( "%d" ), MaxList );
     ::WritePrivateProfileString( sectionName, strMaxList, str, iniFilePath );
     wsprintf( str, TEXT( "%d" ), AutoClean ? 1 : 0 );
@@ -84,7 +83,6 @@ void pluginCleanUp()
     ::WritePrivateProfileString( sectionName, strInCurr, str, iniFilePath );
     wsprintf( str, TEXT( "%d" ), bAutoRecord ? 1 : 0 );
     ::WritePrivateProfileString( sectionName, strAutoRecord, str, iniFilePath );
-
     wsprintf( str, TEXT( "%d" ), NeedMark ? 1 : 0 );
     ::WritePrivateProfileString( sectionName, strNeedMark, str, iniFilePath );
     wsprintf( str, TEXT( "%d" ), ByBookMark );
@@ -98,6 +96,7 @@ void pluginCleanUp()
     {
         //SaveRecording = true;
         TCHAR iniContent[RecordConentMax] = {0};
+
         // ???????,??? locationlist ??
         for ( int i = 0; i < LocationSave.size(); i++ )
         {
@@ -106,6 +105,7 @@ void pluginCleanUp()
                       LocationSave[i].position, LocationSave[i].FilePath );
             lstrcat( iniContent, tmp );
         }
+
         ::WritePrivateProfileString( sectionName, strRecordContent, iniContent,
                                      iniFilePath );
     }
@@ -121,10 +121,13 @@ void pluginCleanUp()
 
     if ( g_TBPreviousChg.hToolbarBmp )
         ::DeleteObject( g_TBPreviousChg.hToolbarBmp );
+
     if ( g_TBPrevious.hToolbarBmp )
         ::DeleteObject( g_TBPrevious.hToolbarBmp );
+
     if ( g_TBNext.hToolbarBmp )
         ::DeleteObject( g_TBNext.hToolbarBmp );
+
     if ( g_TBNextChg.hToolbarBmp )
         ::DeleteObject( g_TBNextChg.hToolbarBmp );
 }
@@ -137,20 +140,16 @@ void commandMenuInit()
     //
     // Firstly we get the parameters from your plugin config file (if any)
     //
-
     // get path of plugin configuration
     ::SendMessage( nppData._nppHandle, NPPM_GETPLUGINSCONFIGDIR, MAX_PATH,
                    ( LPARAM )iniFilePath );
 
     // if config path doesn't exist, we create it
     if ( PathFileExists( iniFilePath ) == FALSE )
-    {
         ::CreateDirectory( iniFilePath, NULL );
-    }
 
     // make your plugin config file full file path name
     PathAppend( iniFilePath, configFileName );
-
     // get the parameter value from plugin config
     MaxOffset = ::GetPrivateProfileInt( sectionName, strMaxOffset, 100,
                                         iniFilePath );
@@ -190,32 +189,26 @@ void commandMenuInit()
     PreviousKey->_isCtrl = true;
     PreviousKey->_isShift = false;
     PreviousKey->_key = VK_OEM_MINUS;
-
     ShortcutKey *NextKey = new ShortcutKey;
     NextKey->_isAlt = false;
     NextKey->_isCtrl = true;
     NextKey->_isShift = true;
     NextKey->_key = VK_OEM_MINUS;
-
     ShortcutKey *PreChgKey = new ShortcutKey;
     PreChgKey->_isAlt = true;
     PreChgKey->_isCtrl = true;
     PreChgKey->_isShift = false;
     PreChgKey->_key = 0x5A ; //VK_Z
-
     ShortcutKey *NextChgKey = new ShortcutKey;
     NextChgKey->_isAlt = true;
     NextChgKey->_isCtrl = true;
     NextChgKey->_isShift = false;
     NextChgKey->_key = 0x59;  //VK_Y
-
-
     ShortcutKey *optionsKey = new ShortcutKey;
     optionsKey->_isAlt = false;
     optionsKey->_isCtrl = true;
     optionsKey->_isShift = true;
     optionsKey->_key = VK_OEM_PLUS;
-
     /*
         ShortcutKey *AutoKey = new ShortcutKey;
         AutoKey->_isAlt = true;
@@ -257,9 +250,7 @@ void commandMenuInit()
                 NextChgKey, false );
     setCommand( menuOption, TEXT( "Show List and Option" ),
                 LocationNavigateHistoryDlg, optionsKey, false );
-
     setCommand( menuSeparator0, TEXT( "-SEPARATOR-" ), NULL, NULL, false );
-
     setCommand( menuAutoRecord, TEXT( "Auto Record" ), AutoRecord, NULL,
                 false );
     setCommand( menuManualRecord, TEXT( "Manual Record" ), ManualRecord, NULL,
@@ -270,9 +261,7 @@ void commandMenuInit()
                 false );
     setCommand( menuNeedMark, TEXT( "Mark Changed Line" ), MarkChange, NULL,
                 false );
-
     setCommand( menuSeparator1, TEXT( "-SEPARATOR-" ), NULL, NULL, false );
-
     setCommand( menuCheckUpdate, TEXT( "Check for update" ), checkUpdate, NULL,
                 false );
     setCommand( menuAbout, TEXT( "About Location Navigate" ), ShowAbout, NULL,
@@ -306,6 +295,7 @@ void PreviousLocation()
         if ( InCurr )
         {
             int pos = LocationPos;
+
             while ( --pos >= 0 )
             {
                 if ( lstrcmp( LocationList[pos].FilePath, currFile ) == 0 )
@@ -321,9 +311,8 @@ void PreviousLocation()
             }
         }
         else
-        {
             LocationPos--;
-        }
+
         SetPosByIndex();
         _LNhistory.refreshDlg();
     }
@@ -336,6 +325,7 @@ void NextLocation()
         if ( InCurr )
         {
             int pos = LocationPos;
+
             while ( ++pos <= LocationList.size() - 1 )
             {
                 if ( lstrcmp( LocationList[pos].FilePath, currFile ) == 0 )
@@ -351,9 +341,8 @@ void NextLocation()
             }
         }
         else
-        {
             LocationPos++;
-        }
+
         SetPosByIndex();
         _LNhistory.refreshDlg();
     }
@@ -362,21 +351,24 @@ void PreviousChangedLocation()
 {
     int tmpPos = LocationPos;
     int len =  LocationList.size() - 1;
+
     if ( tmpPos > len )
-    {
         tmpPos = len;
-    }
+
     while ( tmpPos > 0 )
     {
         // ???????
         int pos = --tmpPos;
+
         if ( LocationList[pos].changed )
         {
             // ??????????
             bool samefile = true;
+
             if ( InCurr )
             {
                 samefile = ( lstrcmp( LocationList[pos].FilePath, currFile ) == 0 );
+
                 if ( samefile )
                 {
                     //if ( lstrcmp(LocationList[LocationPos].FilePath,currFile)==0 )
@@ -385,6 +377,7 @@ void PreviousChangedLocation()
                                  LocationList[LocationPos].position );
                 }
             }
+
             if ( samefile )
             {
                 LocationPos = pos;
@@ -399,20 +392,23 @@ void NextChangedLocation()
 {
     int tmpPos = LocationPos;
     int len =  LocationList.size() - 1;
+
     if ( tmpPos > len )
-    {
         tmpPos = len;
-    }
+
     while ( tmpPos < len )
     {
         // ???????
         int pos = ++tmpPos;
+
         if ( LocationList[pos].changed )
         {
             bool samefile = true;
+
             if ( InCurr )
             {
                 samefile = ( lstrcmp( LocationList[pos].FilePath, currFile ) == 0 );
+
                 if ( samefile )
                 {
                     // ???????????????,???????
@@ -420,6 +416,7 @@ void NextChangedLocation()
                                  LocationList[LocationPos].position );
                 }
             }
+
             if ( samefile )
             {
                 LocationPos = pos;
@@ -441,7 +438,6 @@ void AutoRecord()
     ::EnableMenuItem( ::GetMenu( nppData._nppHandle ),
                       funcItem[menuManualRecord]._cmdID,
                       MF_BYCOMMAND | ( bAutoRecord ? MF_GRAYED : MF_ENABLED ) );
-
 }
 void ManualRecord()
 {
@@ -462,9 +458,10 @@ void NavigateInCurr()
                      MF_BYCOMMAND | ( InCurr ? MF_CHECKED : MF_UNCHECKED ) );
     // ??????
     _LNhistory.refreshDlg();
+
     if ( _LNhistory.isCreated() )
     {
-        ::SendMessage( _LNhistory._hInCurr, BM_SETCHECK ,
+        ::SendMessage( _LNhistory._hInCurr, BM_SETCHECK,
                        ( LPARAM )( InCurr ? 1 : 0 ), 0 );
     }
 }
@@ -475,10 +472,11 @@ void MarkChange()
     ::CheckMenuItem( ::GetMenu( nppData._nppHandle ),
                      funcItem[menuNeedMark]._cmdID,
                      MF_BYCOMMAND | ( NeedMark ? MF_CHECKED : MF_UNCHECKED ) );
+
     // ??????
     if ( _LNhistory.isCreated() )
     {
-        ::SendMessage( _LNhistory._hMark, BM_SETCHECK ,
+        ::SendMessage( _LNhistory._hMark, BM_SETCHECK,
                        ( LPARAM )( NeedMark ? 1 : 0 ), 0 );
     }
 }
@@ -498,7 +496,6 @@ bool setCommand( size_t index, TCHAR *cmdName, PFUNCPLUGINCMD pFunc,
     funcItem[index]._pFunc = pFunc;
     funcItem[index]._init2Check = check0nInit;
     funcItem[index]._pShKey = sk;
-
     return true;
 }
 void LocationNavigateHistoryDlg()
@@ -509,12 +506,9 @@ void LocationNavigateHistoryDlg()
     if ( !_LNhistory.isCreated() )
     {
         _LNhistory.create( &data );
-
         // define the default docking behaviour
         data.uMask          = DWS_DF_CONT_RIGHT | DWS_ICONTAB;
-
         data.pszModuleName = _LNhistory.getPluginFileName();
-
         // the dlgDlg should be the index of funcItem where the current function pointer is
         data.dlgID = menuOption;
         data.hIconTab       = ( HICON )::LoadImage( _LNhistory.getHinst(),
@@ -523,12 +517,15 @@ void LocationNavigateHistoryDlg()
         ::SendMessage( nppData._nppHandle, NPPM_DMMREGASDCKDLG, 0,
                        ( LPARAM )&data );
     }
+
     UINT state = ::GetMenuState( ::GetMenu( nppData._nppHandle ),
                                  funcItem[menuOption]._cmdID, MF_BYCOMMAND );
+
     if ( state & MF_CHECKED )
         _LNhistory.display( false );
     else
         _LNhistory.display();
+
     ::SendMessage( nppData._nppHandle, NPPM_SETMENUITEMCHECK,
                    funcItem[menuOption]._cmdID, !( state & MF_CHECKED ) );
 }

@@ -21,129 +21,148 @@
 void StaticDialog::goToCenter()
 {
     RECT rc;
-    ::GetClientRect(_hParent, &rc);
+    ::GetClientRect( _hParent, &rc );
     POINT center;
-    center.x = rc.left + (rc.right - rc.left)/2;
-    center.y = rc.top + (rc.bottom - rc.top)/2;
-    ::ClientToScreen(_hParent, &center);
+    center.x = rc.left + ( rc.right - rc.left ) / 2;
+    center.y = rc.top + ( rc.bottom - rc.top ) / 2;
+    ::ClientToScreen( _hParent, &center );
 
-    int x = center.x - (_rc.right - _rc.left)/2;
-    int y = center.y - (_rc.bottom - _rc.top)/2;
+    int x = center.x - ( _rc.right - _rc.left ) / 2;
+    int y = center.y - ( _rc.bottom - _rc.top ) / 2;
 
-    ::SetWindowPos(_hSelf, HWND_TOP, x, y, _rc.right - _rc.left, _rc.bottom - _rc.top, SWP_SHOWWINDOW);
+    ::SetWindowPos( _hSelf, HWND_TOP, x, y, _rc.right - _rc.left,
+                    _rc.bottom - _rc.top, SWP_SHOWWINDOW );
 }
 
-HGLOBAL StaticDialog::makeRTLResource(int dialogID, DLGTEMPLATE **ppMyDlgTemplate)
+HGLOBAL StaticDialog::makeRTLResource( int dialogID,
+                                       DLGTEMPLATE **ppMyDlgTemplate )
 {
-	// Get Dlg Template resource
-	HRSRC  hDialogRC = ::FindResource(_hInst, MAKEINTRESOURCE(dialogID), RT_DIALOG);
-	if (!hDialogRC)
-		return NULL;
+    // Get Dlg Template resource
+    HRSRC  hDialogRC = ::FindResource( _hInst, MAKEINTRESOURCE( dialogID ),
+                                       RT_DIALOG );
 
-	HGLOBAL  hDlgTemplate = ::LoadResource(_hInst, hDialogRC);
-	if (!hDlgTemplate)
-		return NULL;
+    if ( !hDialogRC )
+        return NULL;
 
-	DLGTEMPLATE *pDlgTemplate = reinterpret_cast<DLGTEMPLATE *>(::LockResource(hDlgTemplate));
-	if (!pDlgTemplate)
-		return NULL;
+    HGLOBAL  hDlgTemplate = ::LoadResource( _hInst, hDialogRC );
 
-	// Duplicate Dlg Template resource
-	unsigned long sizeDlg = ::SizeofResource(_hInst, hDialogRC);
-	HGLOBAL hMyDlgTemplate = ::GlobalAlloc(GPTR, sizeDlg);
-	*ppMyDlgTemplate = reinterpret_cast<DLGTEMPLATE *>(::GlobalLock(hMyDlgTemplate));
+    if ( !hDlgTemplate )
+        return NULL;
 
-	::memcpy(*ppMyDlgTemplate, pDlgTemplate, sizeDlg);
+    DLGTEMPLATE *pDlgTemplate = reinterpret_cast<DLGTEMPLATE *>( ::LockResource(
+                                    hDlgTemplate ) );
 
-	DLGTEMPLATEEX *pMyDlgTemplateEx = reinterpret_cast<DLGTEMPLATEEX *>(*ppMyDlgTemplate);
-	if (pMyDlgTemplateEx->signature == 0xFFFF)
-		pMyDlgTemplateEx->exStyle |= WS_EX_LAYOUTRTL;
-	else
-		(*ppMyDlgTemplate)->dwExtendedStyle |= WS_EX_LAYOUTRTL;
+    if ( !pDlgTemplate )
+        return NULL;
 
-	return hMyDlgTemplate;
+    // Duplicate Dlg Template resource
+    unsigned long sizeDlg = ::SizeofResource( _hInst, hDialogRC );
+    HGLOBAL hMyDlgTemplate = ::GlobalAlloc( GPTR, sizeDlg );
+    *ppMyDlgTemplate = reinterpret_cast<DLGTEMPLATE *>( ::GlobalLock(
+                           hMyDlgTemplate ) );
+
+    ::memcpy( *ppMyDlgTemplate, pDlgTemplate, sizeDlg );
+
+    DLGTEMPLATEEX *pMyDlgTemplateEx = reinterpret_cast<DLGTEMPLATEEX *>
+                                      ( *ppMyDlgTemplate );
+
+    if ( pMyDlgTemplateEx->signature == 0xFFFF )
+        pMyDlgTemplateEx->exStyle |= WS_EX_LAYOUTRTL;
+    else
+        ( *ppMyDlgTemplate )->dwExtendedStyle |= WS_EX_LAYOUTRTL;
+
+    return hMyDlgTemplate;
 }
 
-void StaticDialog::create(int dialogID, bool isRTL)
+void StaticDialog::create( int dialogID, bool isRTL )
 {
-    if (isRTL)
+    if ( isRTL )
     {
-		DLGTEMPLATE *pMyDlgTemplate = NULL;
-		HGLOBAL hMyDlgTemplate = makeRTLResource(dialogID, &pMyDlgTemplate);
-		_hSelf = ::CreateDialogIndirectParam(_hInst, pMyDlgTemplate, _hParent, dlgProc, reinterpret_cast<LPARAM>(this));
-		::GlobalFree(hMyDlgTemplate);
+        DLGTEMPLATE *pMyDlgTemplate = NULL;
+        HGLOBAL hMyDlgTemplate = makeRTLResource( dialogID, &pMyDlgTemplate );
+        _hSelf = ::CreateDialogIndirectParam( _hInst, pMyDlgTemplate, _hParent,
+                                              dlgProc, reinterpret_cast<LPARAM>( this ) );
+        ::GlobalFree( hMyDlgTemplate );
     }
     else
-        _hSelf = ::CreateDialogParam(_hInst, MAKEINTRESOURCE(dialogID), _hParent, dlgProc, reinterpret_cast<LPARAM>(this));
+        _hSelf = ::CreateDialogParam( _hInst, MAKEINTRESOURCE( dialogID ), _hParent,
+                                      dlgProc, reinterpret_cast<LPARAM>( this ) );
 
-    if (!_hSelf)
-    {
+    if ( !_hSelf )
         return;
-    }
 
-    ::SendMessage(_hParent, NPPM_MODELESSDIALOG, MODELESSDIALOGADD, reinterpret_cast<WPARAM>(_hSelf));
+    ::SendMessage( _hParent, NPPM_MODELESSDIALOG, MODELESSDIALOGADD,
+                   reinterpret_cast<WPARAM>( _hSelf ) );
 }
 
-INT_PTR CALLBACK StaticDialog::dlgProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
+INT_PTR CALLBACK StaticDialog::dlgProc( HWND hwnd, UINT message,
+                                        WPARAM wParam, LPARAM lParam )
 {
-    switch (message)
+    switch ( message )
     {
         case WM_INITDIALOG:
         {
-            StaticDialog *pStaticDlg = reinterpret_cast<StaticDialog *>(lParam);
+            StaticDialog *pStaticDlg = reinterpret_cast<StaticDialog *>( lParam );
             pStaticDlg->_hSelf = hwnd;
-            ::SetWindowLongPtr(hwnd, GWLP_USERDATA, static_cast<LONG_PTR>(lParam));
-            ::GetWindowRect(hwnd, &(pStaticDlg->_rc));
-            pStaticDlg->run_dlgProc(message, wParam, lParam);
+            ::SetWindowLongPtr( hwnd, GWLP_USERDATA, static_cast<LONG_PTR>( lParam ) );
+            ::GetWindowRect( hwnd, &( pStaticDlg->_rc ) );
+            pStaticDlg->run_dlgProc( message, wParam, lParam );
 
             return TRUE;
         }
 
         default:
         {
-            StaticDialog *pStaticDlg = reinterpret_cast<StaticDialog *>(::GetWindowLongPtr(hwnd, GWLP_USERDATA));
-            if (!pStaticDlg)
+            StaticDialog *pStaticDlg = reinterpret_cast<StaticDialog *>
+                                       ( ::GetWindowLongPtr( hwnd, GWLP_USERDATA ) );
+
+            if ( !pStaticDlg )
                 return FALSE;
-            return pStaticDlg->run_dlgProc(message, wParam, lParam);
+
+            return pStaticDlg->run_dlgProc( message, wParam, lParam );
         }
     }
 }
 
-void StaticDialog::alignWith(HWND handle, HWND handle2Align, PosAlign pos, POINT & point)
+void StaticDialog::alignWith( HWND handle, HWND handle2Align, PosAlign pos,
+                              POINT &point )
 {
     RECT rc, rc2;
-    ::GetWindowRect(handle, &rc);
+    ::GetWindowRect( handle, &rc );
 
     point.x = rc.left;
     point.y = rc.top;
 
-    switch (pos)
+    switch ( pos )
     {
         case ALIGNPOS_LEFT:
         {
-            ::GetWindowRect(handle2Align, &rc2);
+            ::GetWindowRect( handle2Align, &rc2 );
             point.x -= rc2.right - rc2.left;
             break;
         }
+
         case ALIGNPOS_RIGHT:
         {
-            ::GetWindowRect(handle, &rc2);
+            ::GetWindowRect( handle, &rc2 );
             point.x += rc2.right - rc2.left;
             break;
         }
+
         case ALIGNPOS_TOP:
         {
-            ::GetWindowRect(handle2Align, &rc2);
+            ::GetWindowRect( handle2Align, &rc2 );
             point.y -= rc2.bottom - rc2.top;
             break;
         }
+
         default: //ALIGNPOS_BOTTOM
         {
-            ::GetWindowRect(handle, &rc2);
+            ::GetWindowRect( handle, &rc2 );
             point.y += rc2.bottom - rc2.top;
             break;
         }
     }
-    
-    ::ScreenToClient(_hSelf, &point);
+
+    ::ScreenToClient( _hSelf, &point );
 }
