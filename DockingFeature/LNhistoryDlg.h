@@ -19,7 +19,7 @@
 #define LNHISTORY_DLG_H
 
 #include "DockingDlgInterface.h"
-#include "PluginDefinition.h"
+#include "../PluginDefinition.h"
 #include "SelfCtrl.h"
 #include "resource.h"
 
