@@ -221,7 +221,7 @@ INT_PTR CALLBACK LocationNavigateDlg::run_dlgProc( UINT message,
                 case MAKELONG( IDC_LOC_LIST, LBN_DBLCLK ):
                 case IDOK :
                 {
-                    long index = ::SendMessage( _hListBox, LB_GETCURSEL, 0, 0 );
+                    size_t index = ::SendMessage( _hListBox, LB_GETCURSEL, 0, 0 );
 
                     if ( index > -1 && index < LocationList.size() )
                     {
@@ -247,7 +247,7 @@ INT_PTR CALLBACK LocationNavigateDlg::run_dlgProc( UINT message,
             ::SendMessage( _hListBox, LB_RESETCONTENT, 0, 0 );
 
             //::MessageBox(NULL,TEXT("111") , TEXT(""), MB_OK);%d,,LocationList[i].bufferID
-            for ( int i = 0; i < LocationList.size(); i++ )
+            for ( size_t i = 0; i < LocationList.size(); i++ )
             {
                 TCHAR strHint[500] = {0};
                 wsprintf( strHint, TEXT( "%c,%d,%s" ), LocationList[i].changed ? '!' : '=',
