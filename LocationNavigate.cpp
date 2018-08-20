@@ -120,7 +120,7 @@ void DoFilesCheck()
     bool haveFiles = false;
     //EnterCriticalSection(&criCounter);
 
-    for ( int listIndex = 0; listIndex < LocationList.size(); listIndex++ )
+    for ( size_t listIndex = 0; listIndex < LocationList.size(); listIndex++ )
     {
         if ( LocationList[listIndex].bufferID != PreBufferID )
         {
@@ -144,7 +144,7 @@ void DoFilesCheck()
         {
             LocationList.erase( LocationList.begin() + listIndex );
 
-            if ( LocationPos >= listIndex )
+            if ( LocationPos >= (long)listIndex )
                 LocationPos--;
 
             if ( LocationPos < 0 )
@@ -171,7 +171,7 @@ void DoModify( int len, int pos )
     //::MessageBox(NULL,buffer, TEXT(""), MB_OK);
     bool needRemove = false;
 
-    for ( int i = 0; i < LocationList.size(); i++ )
+    for ( size_t i = 0; i < LocationList.size(); i++ )
     {
         if ( LocationList[i].bufferID == currBufferID )
         {
@@ -199,14 +199,14 @@ void DoModify( int len, int pos )
 
     if ( needRemove )
     {
-        for ( int i = 0; i < LocationList.size(); i++ )
+        for ( size_t i = 0; i < LocationList.size(); i++ )
         {
             if ( -1 == LocationList[i].position )
             {
                 LocationList.erase( LocationList.begin() + i );
 
                 // LocationPos ??
-                if ( LocationPos >= i )
+                if ( LocationPos >= (long)i )
                     LocationPos--;
 
                 if ( LocationPos < 0 )
@@ -268,7 +268,7 @@ void AddListData( LocationInfo *tmp )
 
     while ( true )
     {
-        if ( LocationList.size() > MaxList )
+        if ( LocationList.size() > (size_t)MaxList )
         {
             // ???????
             LocationList.pop_front();
@@ -468,7 +468,7 @@ DWORD WINAPI ThreadFunc( LPVOID lpParam )
                     lstrcpy( currFile, currTmpFile );
 
                     // ?????? bufferID=0??
-                    for ( int i = 0; i < LocationList.size(); i++ )
+                    for ( size_t i = 0; i < LocationList.size(); i++ )
                     {
                         if ( LocationList[i].bufferID == 0
                                 && lstrcmp( LocationList[i].FilePath, currFile ) == 0 )
@@ -517,7 +517,7 @@ void DoSavedColor()
     if ( ByBookMark == MarkBookmark )
         return;
 
-    for ( int i = 0; i < MarkHistory.size(); i++ )
+    for ( size_t i = 0; i < MarkHistory.size(); i++ )
     {
         if ( MarkHistory[i].BufferID == currTmpBufferID )
         {

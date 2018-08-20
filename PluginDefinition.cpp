@@ -21,6 +21,7 @@
 //
 // put the headers you need here
 //
+#include "stdafx.h"
 #include <stdlib.h>
 #include <time.h>
 #include <shlwapi.h>
@@ -98,7 +99,7 @@ void pluginCleanUp()
         TCHAR iniContent[RecordConentMax] = {0};
 
         // ???????,??? locationlist ??
-        for ( int i = 0; i < LocationSave.size(); i++ )
+        for ( size_t i = 0; i < LocationSave.size(); i++ )
         {
             TCHAR tmp[300] = {0};
             wsprintf( tmp, TEXT( "%d<%d>%s|" ), LocationSave[i].changed ? 1 : 0,
@@ -319,12 +320,12 @@ void PreviousLocation()
 }
 void NextLocation()
 {
-    if ( LocationPos < LocationList.size() - 1 )
+    if ( LocationPos < (long)LocationList.size() - 1 )
     {
         // ????????????
         if ( InCurr )
         {
-            int pos = LocationPos;
+            size_t pos = LocationPos;
 
             while ( ++pos <= LocationList.size() - 1 )
             {

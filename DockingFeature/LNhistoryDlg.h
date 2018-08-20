@@ -105,7 +105,7 @@ class LocationNavigateDlg : public DockingDlgInterface
             //::MessageBox(NULL, TEXT("refreshDlg"), TEXT(""), MB_OK);
             //EnterCriticalSection(&criCounter);
             int firstChg = -1, lastChg = -1;
-            for ( int i = 0; i < LocationList.size(); i++ )
+            for ( size_t i = 0; i < LocationList.size(); i++ )
             {
                 //?????????????
                 // || LocationList[i-1].bufferID == 0
@@ -115,7 +115,7 @@ class LocationNavigateDlg : public DockingDlgInterface
                 {
                     LocationList.erase( LocationList.begin() + i );
                     // LocationPos ??
-                    if ( LocationPos >= i )LocationPos--;
+                    if ( LocationPos >= (long)i )LocationPos--;
                     if ( LocationPos < 0 )
                     {
                         LocationPos = 0;
