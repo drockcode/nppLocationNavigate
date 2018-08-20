@@ -125,13 +125,14 @@
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="DockingFeature\LNhistory.rc" />
+    <ResourceCompile Include="LocationNavigate.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties RESOURCE_FILE="DockingFeature\LNhistory.rc" />
+      <UserProperties RESOURCE_FILE="LocationNavigate.rc" />
     </VisualStudio>
   </ProjectExtensions>
 </Project>

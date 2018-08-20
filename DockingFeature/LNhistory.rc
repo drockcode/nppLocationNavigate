@@ -31,30 +31,3 @@ IDB_BITMAP2 BITMAP DISCARDABLE "next16.bmp"
 IDB_BITMAP3 BITMAP DISCARDABLE "cprevious16.bmp"
 IDB_BITMAP4 BITMAP DISCARDABLE "cnext16.bmp"
 IDI_ICON1 ICON DISCARDABLE "icon1.ico"
-
-VS_VERSION_INFO VERSIONINFO
-FILEVERSION 0,4,7,7
-PRODUCTVERSION 0,4,7,7
-FILEOS 0x00000004
-FILETYPE 0x00000000
-BEGIN
-  BLOCK "StringFileInfo"
-  BEGIN
-    BLOCK "080404B0"
-    BEGIN
-      VALUE "CompanyName", "Pattazl, Lark Stuio\0"
-      VALUE "FileDescription", "LocationNavigate for code/text view and edit\0"
-      VALUE "FileVersion", "0, 4, 7, 7\0"
-      VALUE "InternalName", "LocationNavigate\0"
-      VALUE "LegalCopyright", "Copyleft (C) 2011-2012\0"
-      VALUE "OriginalFilename", "LocationNavigate\0"
-      VALUE "ProductName", "LocationNavigate\0"
-      VALUE "ProductVersion", "0, 4, 7, 7\0"
-    END
-  END
-  BLOCK "VarFileInfo"
-  BEGIN
-    VALUE "Translation", 0x0804, 0x04B0
-  END
-END
-
