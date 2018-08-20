@@ -90,7 +90,7 @@ class DockingDlgInterface : public StaticDialog
         };
 
     protected :
-        virtual INT_PTR CALLBACK run_dlgProc( UINT message, WPARAM wParam,
+        virtual INT_PTR CALLBACK run_dlgProc( UINT message, WPARAM /*wParam*/,
                                            LPARAM lParam )
         {
             switch ( message )
@@ -130,12 +130,12 @@ class DockingDlgInterface : public StaticDialog
         };
 
         // Handles
-        HWND            _HSource;
-        tTbData        *_data;
-        int             _dlgID;
-        bool            _isFloating;
-        TCHAR            _moduleName[MAX_PATH];
-        TCHAR           _pluginName[MAX_PATH];
+        HWND     _HSource;
+        tTbData *_data;
+        int      _dlgID;
+        bool     _isFloating;
+        TCHAR    _moduleName[MAX_PATH];
+        TCHAR    _pluginName[MAX_PATH];
 };
 
 #endif // DOCKINGDLGINTERFACE_H

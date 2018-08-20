@@ -18,6 +18,8 @@
 #ifndef NOTEPAD_PLUS_MSGS_H
 #define NOTEPAD_PLUS_MSGS_H
 
+#include <windows.h>
+#include <tchar.h>
 #include "menuCmdID.h"
 
 enum LangType {L_TXT, L_PHP , L_C, L_CPP, L_CS, L_OBJC, L_JAVA, L_RC,\

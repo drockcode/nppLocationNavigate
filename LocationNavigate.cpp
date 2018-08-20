@@ -18,6 +18,7 @@
 #include <shlwapi.h>
 #include "DockingFeature/LNhistoryDlg.h"
 
+#include <windows.h>
 #include <tchar.h>
 #include <list>
 #include <WinBase.h>
@@ -125,7 +126,7 @@ void DoFilesCheck()
         if ( LocationList[listIndex].bufferID != PreBufferID )
         {
             // ???????
-            int len = lstrlen( LocationList[listIndex].FilePath );
+            //int len = lstrlen( LocationList[listIndex].FilePath );
             haveFiles = false;
             PreBufferID = LocationList[listIndex].bufferID;
 

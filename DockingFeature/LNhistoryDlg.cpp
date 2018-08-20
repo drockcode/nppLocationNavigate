@@ -16,7 +16,7 @@
 //Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include "LNhistoryDlg.h"
-#include "..\PluginDefinition.h"
+#include "../PluginDefinition.h"
 
 extern void InitBookmark();
 extern vector<MarkData> MarkHistory;
@@ -103,7 +103,7 @@ void SetPosByIndex()
 
 
         // ???????????????,?????
-        long currCenterLine = ( int )( beginLines + screenLines / 2 );
+        //long currCenterLine = ( int )( beginLines + screenLines / 2 );
         long scrollLine = 0; // currLines2-(int)(beginLines+screenLines/2)
 
         // ???????????????????????,???????????,???
