@@ -33,11 +33,11 @@ FILESUBTYPE VFT2_UNKNOWN
 BEGIN
   BLOCK "VarFileInfo"
   BEGIN
-    VALUE "Translation",  0x409,  1200
+    VALUE "Translation",  0x409,  1252
   END
   BLOCK "StringFileInfo"
   BEGIN
-    BLOCK "040904b0"
+    BLOCK "040904E4"
     BEGIN
       VALUE "CompanyName", "Pattazl, Lark Stuio\0"
       VALUE "FileDescription", "LocationNavigate for code/text view and edit\0"
