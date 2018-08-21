@@ -83,7 +83,7 @@ extern void ClearLocationList();
 void SetPosByIndex();
 void EnableTBButton( menuList flagIndex, bool state );
 
-#define TB_ENABLEBUTTON         (WM_USER + 1)
+#define TB_ENABLEBUTTON (WM_USER + 1)
 
 class LocationNavigateDlg : public DockingDlgInterface
 {
@@ -114,11 +114,10 @@ class LocationNavigateDlg : public DockingDlgInterface
                 {
                     LocationList.erase( LocationList.begin() + i );
                     // LocationPos ??
-                    if ( LocationPos >= (long)i )LocationPos--;
+                    if ( LocationPos >= (long)i )
+                        LocationPos--;
                     if ( LocationPos < 0 )
-                    {
                         LocationPos = 0;
-                    }
                     //????????????
                     i--;
                 }
@@ -149,7 +148,7 @@ class LocationNavigateDlg : public DockingDlgInterface
                 EnableTBButton( menuPrevious, true );
             }
 
-            if ( LocationPos == LocationList.size() - 1 || LocationList.size() == 0 )
+            if ( (size_t)LocationPos == LocationList.size() - 1 || LocationList.size() == 0 )
             {
                 EnableTBButton( menuNext, false );
             }

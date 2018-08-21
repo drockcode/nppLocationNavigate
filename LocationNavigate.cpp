@@ -340,10 +340,8 @@ void AddList( bool flag )
             haveDeleted = false;
         }
         else
-        {
             //tmp.changed  = false;
             tmpChanged = false;
-        }
 
         //lstrcpy(tmp.FilePath,currFile);
         ActionData actTmp;
@@ -389,9 +387,7 @@ void InitBookmark()
         int SC_MarkType = SC_MARK_BACKGROUND;
 
         if (   ByBookMark == MarkUnderLine )
-        {
             widthMargin = 1; // ??????,?????BUG
-        }
         else if (   ByBookMark == MarkRect )
             widthMargin = 4;
         else if (
@@ -403,15 +399,6 @@ void InitBookmark()
             widthMargin = 12;
 
         ::SendMessage( tmpScintilla, SCI_SETMARGINWIDTHN, 4, widthMargin );
-
-        // ????
-        try
-        {
-            SC_MarkType = MarkTypeArr[ByBookMark];
-        }
-        catch ( ... )
-        {
-        }
 
         int OriMask = ::SendMessage( tmpScintilla, SCI_GETMARGINMASKN, 4, 0 );
         int markerMask1 = ( 1 << _MARK_INDEX );
@@ -444,7 +431,7 @@ void InitBookmark()
 
 static bool ThreadNeedRefresh = false;
 
-DWORD WINAPI ThreadFunc( LPVOID lpParam )
+DWORD WINAPI ThreadFunc( LPVOID /*lpParam*/ )
 {
     while ( !AllCloseFlag )
     {
@@ -739,10 +726,8 @@ void DelBookmark( int lineNo, int pos, int lineAdd )
     }
 
     if ( -1 == isMarkedIndex )
-    {
         // ?????????
         return;
-    }
 
     int lineB = lineNo;
     int lineE = lineNo + lineAdd;
@@ -760,7 +745,7 @@ void DelBookmark( int lineNo, int pos, int lineAdd )
 //////////  SELF FUNCTION END ////////
 BOOL APIENTRY DllMain( HANDLE hModule,
                        DWORD  reasonForCall,
-                       LPVOID lpReserved )
+                       LPVOID /*lpReserved*/ )
 {
     switch ( reasonForCall )
     {
@@ -1235,7 +1220,7 @@ extern "C" __declspec( dllexport ) void beNotified( SCNotification
                 break;
             }
 
-            long pos, len;
+            long pos = 0; long len = 0;
             bool flag = false;
 
             // SC_MOD_BEFOREINSERT SC_MOD_INSERTTEXT SC_MOD_BEFOREDELETE SC_MOD_DELETETEXT
@@ -1372,8 +1357,8 @@ extern "C" __declspec( dllexport ) void beNotified( SCNotification
 // http://sourceforge.net/forum/forum.php?forum_id=482781
 //
 
-extern "C" __declspec( dllexport ) LRESULT messageProc( UINT Message,
-        WPARAM wParam, LPARAM lParam )
+extern "C" __declspec( dllexport ) LRESULT messageProc( UINT /*Message*/,
+        WPARAM /*wParam*/, LPARAM /*lParam*/ )
 {
     // only support WM_SIZE and  WM_MOVE
     return TRUE;
