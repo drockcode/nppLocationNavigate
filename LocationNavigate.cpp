@@ -17,10 +17,10 @@
 #include "PluginDefinition.h"
 #include <shlwapi.h>
 #include "DockingFeature/LNhistoryDlg.h"
-
-#include <windows.h>
+#include <string.h>
 #include <tchar.h>
 #include <list>
+#include <mutex>
 #include <WinBase.h>
 
 ////////////////SELF DATA BEGIN///////////
@@ -95,6 +95,7 @@ struct ActionData
 };
 
 list<ActionData> ActionDataList;
+mutex ActionDataLock;
 
 void DoFilesCheck()
 {
@@ -348,7 +349,9 @@ void AddList( bool flag )
         actTmp.type = ActionLocation;
         actTmp.position = position;
         actTmp.changed = tmpChanged;
+        ActionDataLock.lock();
         ActionDataList.push_back( actTmp );
+        ActionDataLock.unlock();
         //AddListData(&tmp);
         //LeaveCriticalSection(&criCounter);
         //_LNhistory.refreshDlg();
@@ -435,12 +438,14 @@ DWORD WINAPI ThreadFunc( LPVOID /*lpParam*/ )
 {
     while ( !AllCloseFlag )
     {
+        ActionDataLock.lock();
         while ( !ActionDataList.empty() )
         {
             if ( !ThreadNeedRefresh )
                 ThreadNeedRefresh = true;
 
             ActionData tmpAct = ActionDataList.front();
+            ActionDataLock.unlock();
 
             switch ( tmpAct.type )
             {
@@ -485,9 +490,11 @@ DWORD WINAPI ThreadFunc( LPVOID /*lpParam*/ )
                 break;
             }
 
+            ActionDataLock.lock();
             ActionDataList.pop_front();
         }
-
+        ActionDataLock.unlock();
+        
         if ( ThreadNeedRefresh )
         {
             _LNhistory.refreshDlg();
@@ -1089,7 +1096,9 @@ extern "C" __declspec( dllexport ) void beNotified( SCNotification
                 // ????????????????
                 ActionData tmp;
                 tmp.type = ActionClosed;
+                ActionDataLock.lock();
                 ActionDataList.push_back( tmp );
+                ActionDataLock.unlock();
 
                 // ????????????????????
                 if ( notifyCode->nmhdr.code == NPPN_FILEOPENED && LocationList.size() > 0 )
@@ -1158,7 +1167,9 @@ extern "C" __declspec( dllexport ) void beNotified( SCNotification
                            ( WPARAM )notifyCode->nmhdr.idFrom, ( LPARAM )currTmpFile );
             ActionData tmp;
             tmp.type = ActionActive;
+            ActionDataLock.lock();
             ActionDataList.push_back( tmp );
+            ActionDataLock.unlock();
 
             // ????? currBufferID currFile
             if ( ready )
@@ -1284,7 +1295,9 @@ extern "C" __declspec( dllexport ) void beNotified( SCNotification
                 tmp.type = ActionModify;
                 tmp.position = pos;
                 tmp.length = len;
+                ActionDataLock.lock();
                 ActionDataList.push_back( tmp );
+                ActionDataLock.unlock();
 
                 if ( NeedMark )
                 {
