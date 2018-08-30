@@ -22,6 +22,7 @@
 #include <tchar.h>
 #include <list>
 #include <WinBase.h>
+#include <mutex>
 
 ////////////////SELF DATA BEGIN///////////
 TCHAR currFile[MAX_PATH] = {0};
@@ -95,6 +96,7 @@ struct ActionData
 };
 
 list<ActionData> ActionDataList;
+std::mutex ActionDataList_mutex;
 
 void DoFilesCheck()
 {
@@ -348,7 +350,9 @@ void AddList( bool flag )
         actTmp.type = ActionLocation;
         actTmp.position = position;
         actTmp.changed = tmpChanged;
+        ActionDataList_mutex.lock();
         ActionDataList.push_back( actTmp );
+        ActionDataList_mutex.unlock();
         //AddListData(&tmp);
         //LeaveCriticalSection(&criCounter);
         //_LNhistory.refreshDlg();
@@ -1021,13 +1025,12 @@ extern "C" __declspec( dllexport ) void beNotified( SCNotification
             }
 
             // ??????,????????
-            DWORD   dwThrdParam   =   1;
             HANDLE   hThread;
             hThread =::CreateThread(
                          NULL, //   no   security   attributes
                          0,//   use   default   stack   size
                          ThreadFunc,//   thread   function
-                         &dwThrdParam,//   argument   to   thread   function
+                         0,//   argument   to   thread   function
                          0,//   use   default   creation   flags
                          NULL ); //   returns   the   thread   identifier
             ::CloseHandle( hThread );
@@ -1089,7 +1092,9 @@ extern "C" __declspec( dllexport ) void beNotified( SCNotification
                 // ????????????????
                 ActionData tmp;
                 tmp.type = ActionClosed;
+                ActionDataList_mutex.lock();
                 ActionDataList.push_back( tmp );
+                ActionDataList_mutex.unlock();
 
                 // ????????????????????
                 if ( notifyCode->nmhdr.code == NPPN_FILEOPENED && LocationList.size() > 0 )
@@ -1158,7 +1163,9 @@ extern "C" __declspec( dllexport ) void beNotified( SCNotification
                            ( WPARAM )notifyCode->nmhdr.idFrom, ( LPARAM )currTmpFile );
             ActionData tmp;
             tmp.type = ActionActive;
+            ActionDataList_mutex.lock();
             ActionDataList.push_back( tmp );
+            ActionDataList_mutex.unlock();
 
             // ????? currBufferID currFile
             if ( ready )
@@ -1284,7 +1291,9 @@ extern "C" __declspec( dllexport ) void beNotified( SCNotification
                 tmp.type = ActionModify;
                 tmp.position = pos;
                 tmp.length = len;
+                ActionDataList_mutex.lock();
                 ActionDataList.push_back( tmp );
+                ActionDataList_mutex.unlock();
 
                 if ( NeedMark )
                 {
