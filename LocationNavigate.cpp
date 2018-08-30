@@ -1021,7 +1021,7 @@ extern "C" __declspec( dllexport ) void beNotified( SCNotification
             }
 
             // ??????,????????
-            DWORD   dwThreadId,   dwThrdParam   =   1;
+            DWORD   dwThrdParam   =   1;
             HANDLE   hThread;
             hThread =::CreateThread(
                          NULL, //   no   security   attributes
@@ -1029,8 +1029,8 @@ extern "C" __declspec( dllexport ) void beNotified( SCNotification
                          ThreadFunc,//   thread   function
                          &dwThrdParam,//   argument   to   thread   function
                          0,//   use   default   creation   flags
-                         &dwThreadId ); //   returns   the   thread   identifier
-            CloseHandle( hThread );
+                         NULL ); //   returns   the   thread   identifier
+            ::CloseHandle( hThread );
             //InitBookmark();
             ready = true;
         }
