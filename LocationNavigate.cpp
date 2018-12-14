@@ -22,6 +22,7 @@
 #include <list>
 #include <mutex>
 #include <WinBase.h>
+#include <mutex>
 
 ////////////////SELF DATA BEGIN///////////
 TCHAR currFile[MAX_PATH] = {0};
@@ -1028,16 +1029,15 @@ extern "C" __declspec( dllexport ) void beNotified( SCNotification
             }
 
             // ??????,????????
-            DWORD   dwThreadId,   dwThrdParam   =   1;
             HANDLE   hThread;
             hThread =::CreateThread(
                          NULL, //   no   security   attributes
                          0,//   use   default   stack   size
                          ThreadFunc,//   thread   function
-                         &dwThrdParam,//   argument   to   thread   function
+                         0,//   argument   to   thread   function
                          0,//   use   default   creation   flags
-                         &dwThreadId ); //   returns   the   thread   identifier
-            CloseHandle( hThread );
+                         NULL ); //   returns   the   thread   identifier
+            ::CloseHandle( hThread );
             //InitBookmark();
             ready = true;
         }
